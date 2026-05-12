@@ -16,6 +16,9 @@ license = "BSD-3-Clause"
 [project.urls]
 repository = "https://github.com/pypdfium2-team/gn-dist"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.cibuildwheel]
 build-frontend = "build"
 test-command = [
