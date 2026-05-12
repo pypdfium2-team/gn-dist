@@ -66,6 +66,7 @@ jobs:
     permissions:
       id-token: write      # PyPI upload via "trusted publishing", and GH attestation
       attestations: write  # GH attestation
+      contents: write      # tag push
     
     steps:
       
@@ -74,19 +75,18 @@ jobs:
         with:
           persist-credentials: true  # needed for push
       
+      - name: Determine version
+        id: get_version
+        run: |
+          VERSION=$(python3 ./utils/get_version.py)
+          echo "Determined version $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      
       - name: Download sdist
         uses: actions/download-artifact@v8
         with:
           path: dist/
           name: sdist
-      
-      - name: Determine version from sdist
-        id: get_version
-        run:  # q&d
-          VERSION=$(ls dist/*.tar.gz)
-          VERSION=${VERSION##*-}
-          VERSION=${VERSION%%.*}
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       
       - name: Download wheels
         uses: actions/download-artifact@v8
