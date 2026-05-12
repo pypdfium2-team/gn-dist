@@ -1,0 +1,130 @@
+# SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: Build
+on:
+  workflow_dispatch:
+    inputs:
+      cibw_py_ver:
+        type: string
+        default: 'cp314'
+      publish:
+        type: boolean
+        default: false
+      prerelease:
+        type: boolean
+        default: false
+
+jobs:
+  
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        cibw_os: ["manylinux", "musllinux"]
+        cibw_arch: ["x86_64", "i686", "aarch64", "armv7l", "ppc64le", "s390x", "riscv64", "loongarch64"]
+    
+    uses: ./.github/workflows/build_one.yaml
+    with:
+      os: ${{ (matrix.cibw_arch == 'aarch64' || matrix.cibw_arch == 'armv7l') && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+      cibw_os: ${{ matrix.cibw_os }}
+      cibw_arch: ${{ matrix.cibw_arch }}
+      cibw_py_ver: ${{ inputs.cibw_py_ver }}
+  
+  
+  sdist:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Check out the repo
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+          pip-install: build setuptools
+      
+      - name: Package sdist
+        run: python3 -m build -sxn
+      
+      - name: Upload sdist
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./dist/*.tar.gz
+          name: sdist
+  
+  
+  publish:
+    needs: [build, sdist]
+    if: ${{ inputs.publish && !cancelled() && !contains(needs.*.result, 'failure') }}
+    runs-on: ubuntu-latest
+    
+    environment: release  # PyPI upload via "trusted publishing"
+    permissions:
+      id-token: write      # PyPI upload via "trusted publishing", and GH attestation
+      attestations: write  # GH attestation
+    
+    steps:
+      
+      - name: Download sdist
+        uses: actions/download-artifact@v8
+        with:
+          path: dist/
+          name: sdist
+      
+      - name: Determine version from sdist
+        id: get_version
+        run:  # q&d
+          VERSION=$(ls dist/*.tar.gz)
+          VERSION=${VERSION##*-}
+          VERSION=${VERSION%%.*}
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      
+      - name: Download wheels
+        uses: actions/download-artifact@v8
+        with:
+          path: dist/
+          merge-multiple: true
+          pattern: cibw-*
+      
+      - name: Isolate non-PyPI builds
+        run: |
+          mkdir gh_only
+          mv dist/*linux_*_loongarch64*.whl gh_only/
+      
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist/
+          attestations: false
+          verbose: true
+      
+      - name: Attest build provenance
+        id: provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: 'dist/*, gh_only/*'
+      
+      - name: Rename provenance file
+        run: mv "$SRC_PATH" gn-attestation.json
+        env:
+          SRC_PATH: ${{ steps.provenance.outputs.bundle-path }}
+      
+      - name: Publish to GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          immutableCreate: true
+          artifacts: 'dist/*.whl,gh_only/*.whl,dist/*.tar.gz,gn-attestation.json'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.get_version.outputs.version }}
+          prerelease: ${{ inputs.prerelease }}
+      
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

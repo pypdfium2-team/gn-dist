@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause
+
+sbuild/
+build/
+dist/
+**/__pycache__
+src/*.egg-info
+src/gn_dist/gn

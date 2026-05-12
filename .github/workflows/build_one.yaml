@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: Build one
+on:
+  workflow_call:
+    inputs: &reusable_inputs
+      os:
+        type: string
+        required: true
+      cibw_os:
+        type: string
+        required: true
+      cibw_arch:
+        type: string
+        required: true
+      cibw_py_ver:
+        type: string
+        default: 'cp314'
+      # condition:
+      #   type: boolean
+      #   default: true
+  workflow_dispatch:
+    inputs: *reusable_inputs
+
+jobs:
+  
+  build_one:
+    name: ${{ inputs.cibw_os }}_${{ inputs.cibw_arch }} on ${{ inputs.os }}
+    runs-on: ${{ inputs.os }}
+    # if: ${{ inputs.condition }}
+    
+    steps:
+      
+      - name: Check out the repo
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      
+      - name: Set up QEMU
+        if: ${{ !(inputs.cibw_arch == 'x86_64' || inputs.cibw_arch == 'aarch64') }}
+        uses: docker/setup-qemu-action@v4
+      
+      - name: Build wheels
+        uses: loong64/cibuildwheel@dc83b14a5e1c7b76e56a3826b22432c87e1fe5cf  # v3.4.1
+        env:
+          CIBW_BUILD: "${{ inputs.cibw_py_ver }}-${{ inputs.cibw_os }}_${{ inputs.cibw_arch }}"
+          CIBW_ARCHS: "${{ inputs.cibw_arch }}"
+        with:
+          output-dir: wheelhouse
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          path: ./wheelhouse/*.whl
+          name: cibw-${{ inputs.cibw_os }}_${{ inputs.cibw_arch }}

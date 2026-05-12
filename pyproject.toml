@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
+
+[project]
+name = "gn-dist"
+version = "2385"  # gn --version
+description = "Binary distributions of GN (generate-ninja) for Linux."
+readme = "README.md"
+authors = [{ name = "pypdfium2-team", email = "geisserml@gmail.com" }]
+license = "BSD-3-Clause"
+
+[project.urls]
+repository = "https://github.com/pypdfium2-team/gn-dist"
+
+[tool.cibuildwheel]
+build-frontend = "build"
+test-command = [
+    "python {project}/utils/test.py",
+]
+
+
+# install ninja
+
+[[tool.cibuildwheel.overrides]]
+select = "*-manylinux_*"
+before-all = [
+    # "dnf clean all && dnf makecache --refresh",
+    "dnf -y install ninja-build",
+]
+
+# manylinux_armv7l uses a Ubuntu-based image, for lack of an RHEL-based one
+[[tool.cibuildwheel.overrides]]
+select = "*-manylinux_armv7l"
+before-all = [
+    "apt-get update",
+    "apt-get install -y ninja-build",
+]
+manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:2025.11.03-1"
+
+[[tool.cibuildwheel.overrides]]
+select = "*-musllinux_*"
+inherit.before-all = "append"
+before-all = ["apk add ninja-build"]
+environment.PATH = "/usr/lib/ninja-build/bin:$PATH"
+
+
+[[tool.cibuildwheel.overrides]]
+select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
+environment-pass = ["RUNNER_ARCH"]
+inherit.before-all = "append"
+before-all = [
+    "bash ./utils/install-static-clang.sh",
+]
+inherit.environment = "append"
+environment.CXX = "clang++"
+environment.PATH = "/opt/clang/bin:$PATH"
