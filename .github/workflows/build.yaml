@@ -11,9 +11,6 @@ on:
       publish:
         type: boolean
         default: false
-      prerelease:
-        type: boolean
-        default: false
 
 jobs:
   
@@ -135,7 +132,7 @@ jobs:
           artifacts: 'dist/*.whl,gh_only/*.whl,dist/*.tar.gz,gn-attestation.json'
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.get_version.outputs.version }}
-          prerelease: ${{ inputs.prerelease }}
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'b') }}
       
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

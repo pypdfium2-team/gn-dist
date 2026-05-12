@@ -8,7 +8,7 @@ PROJECT_DIR = Path(__file__).parents[1].resolve()
 pyproject_file = PROJECT_DIR/"pyproject.toml"
 
 content = pyproject_file.read_text()
-match = re.search(r'version = "([\d.]+)"', content)
+match = re.search(r'version = "(\w+)"', content)
 assert match
 version = match.group(1)
 print(version, end="")
