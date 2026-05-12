@@ -109,14 +109,13 @@ jobs:
         env:
           NEW_VERSION: ${{ steps.get_version.outputs.version }}
       
-      # XXX temporarily commented out
-      # - name: Publish to TestPyPI
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     repository-url: https://test.pypi.org/legacy/
-      #     packages-dir: dist/
-      #     attestations: false
-      #     verbose: true
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist/
+          attestations: false
+          verbose: true
       
       - name: Attest build provenance
         id: provenance
