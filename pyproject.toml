@@ -48,6 +48,7 @@ manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:2025.11.03-1"
 select = "*-musllinux_*"
 inherit.before-all = "append"
 before-all = ["apk add ninja-build"]
+inherit.environment = "append"
 environment.PATH = "/usr/lib/ninja-build/bin:$PATH"
 
 
