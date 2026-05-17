@@ -30,7 +30,6 @@ class BinaryDistribution (setuptools.Distribution):
 
 
 setuptools.setup(
-    package_data = {"gn_dist": ["gn"]},
     cmdclass = {"build_py": BuildPyClass, "bdist_wheel": BdistWheelClass},
     distclass = BinaryDistribution,
 )

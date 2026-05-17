@@ -16,15 +16,21 @@ license = "BSD-3-Clause"
 [project.urls]
 repository = "https://github.com/pypdfium2-team/gn-dist"
 
+[project.scripts]
+gn = "gn_dist.__main__:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+gn_dist = ["gn"]
+
 
 [tool.cibuildwheel]
 build-frontend = "build"
 test-command = [
     "python {project}/utils/test.py",
 ]
-
 
 # install ninja
 
@@ -49,7 +55,6 @@ select = "*-musllinux_*"
 before-all = ["apk add ninja-build"]
 inherit.environment = "append"
 environment.PATH = "/usr/lib/ninja-build/bin:$PATH"
-
 
 [[tool.cibuildwheel.overrides]]
 select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"

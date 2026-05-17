@@ -8,8 +8,19 @@ Binary distributions of GN (generate-ninja) for Linux (glibc and musl).
 ### Installation
 ```bash
 python3 -m pip install gn-dist
+
+# convenience wrapper script
+GN_WRAPPER=$(which gn)
+$GN_WRAPPER --version
+
+# actual binary
 GN_EXE=$(python3 -c "from gn_dist import GN; print(str(GN))")
 $GN_EXE --version
+
+# to add the actual binary to PATH, you can do e.g.:
+GN_DIR="$(dirname $GN_EXE)"  # or use GN.parent above
+export PATH="$GN_DIR:$PATH"
+# ^ add this to your ~/.bashrc if you want
 ```
 
 For Windows and macOS, you'll want Google's builds from CIPD:<br/>
