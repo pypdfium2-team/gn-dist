@@ -7,7 +7,7 @@ requires = ["setuptools"]
 
 [project]
 name = "gn-dist"
-version = "2385"  # gn --version
+version = "2385.1"  # gn version + .nth_rebuild
 description = "Binary distributions of GN (generate-ninja) for Linux."
 readme = "README.md"
 authors = [{ name = "pypdfium2-team", email = "geisserml@gmail.com" }]
