@@ -33,6 +33,7 @@ def build_gn():
     env = os.environ.copy()
     env["CXX"] = os.environ.get("CXX", "g++")
     run_cmd([sys.executable, "build/gen.py", "--no-static-libstdc++", "--allow-warnings"], cwd=GN_DIR, env=env)
+    # TODO on CI, build and run unittests
     run_cmd(["ninja", "-C", "out", "gn"], cwd=GN_DIR)
     target_path = PROJECT_DIR/"src"/"gn_dist"/"gn"
     shutil.copyfile(GN_DIR/"out"/"gn", target_path)
