@@ -11,7 +11,7 @@ from pathlib import Path
 PROJECT_DIR = Path(__file__).parent.resolve()
 SBUILD_DIR = PROJECT_DIR/"sbuild"
 GN_DIR = SBUILD_DIR/"gn"
-GN_REV = "9ece3f5254c273cb46606a6571963f931c3b012d"
+GN_REV = "3357c4f51b1a9e676378c695dd9c7e9911c35ee6"
 
 def log(*args, **kwargs):
     print(*args, **kwargs, file=sys.stderr)
