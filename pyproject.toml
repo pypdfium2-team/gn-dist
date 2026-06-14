@@ -65,5 +65,4 @@ before-all = [
     "bash ./utils/install-static-clang.sh",
 ]
 inherit.environment = "append"
-environment.CXX = "clang++"
-environment.PATH = "/opt/clang/bin:$PATH"
+environment.BUILD_PARAMS = "-c clang --clang-path /opt/clang"
