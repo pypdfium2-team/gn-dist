@@ -33,9 +33,7 @@ def _env_prepend(key, value, sep):
     os.environ[key] = value + tail
 
 
-CompilerToolset = namedtuple("CompilerToolset", ("CXX", "AR", "LD"), defaults=(None, ))
-
-def build(toolset):
+def build(env=None):
     
     # GN's build system runs git commands that assume a full checkout
     # --depth 1 checkout would need a manually created sbuild/gn/out/last_commit_position.h and passing "--no-last-commit-position" to build/gen.py - probably not worth the trouble for now.
@@ -43,13 +41,6 @@ def build(toolset):
     if not GN_DIR.exists():
         run_cmd(["git", "clone", "https://gn.googlesource.com/gn/"], cwd=SBUILD_DIR)
         run_cmd(["git", "checkout", GN_REV], cwd=GN_DIR)
-    
-    env = os.environ
-    if toolset:
-        env = env.copy()
-        env["CXX"] = toolset.CXX
-        env["AR"] = toolset.AR
-        env["LD"] = toolset.LD or toolset.CXX
     
     args = [sys.executable, "build/gen.py", "--allow-warnings", "--no-static-libstdc++"]
     run_cmd(args, cwd=GN_DIR, env=env)
@@ -60,10 +51,17 @@ def build(toolset):
     _make_executable(target_path)
 
 
+CompilerToolset = namedtuple("CompilerToolset", ("CXX", "AR", "LD"), defaults=(None, ))
+
 def assisted_build(compiler=None, toolprefix="", clang_path=None):
     
     if compiler is None:
-        compiler = "gcc"
+        if shutil.which("g++"):
+            compiler = "gcc"
+        elif shutil.which("clang++"):
+            compiler = "clang"
+        else:
+            raise RuntimeError("A compiler is needed, but neither g++ nor clang++ were found")
     
     if compiler == "gcc":
         toolset = CompilerToolset(CXX=toolprefix+"g++", AR=toolprefix+"ar")
@@ -78,7 +76,12 @@ def assisted_build(compiler=None, toolprefix="", clang_path=None):
     else:
         assert False, compiler
     
-    build(toolset)
+    env = os.environ.copy()
+    env["CXX"] = toolset.CXX
+    env["AR"] = toolset.AR
+    env["LD"] = toolset.LD or toolset.CXX
+    
+    build(env)
 
 
 def parse_args(argv):
