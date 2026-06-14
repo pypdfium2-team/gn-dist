@@ -49,7 +49,7 @@ before-all = [
     "apt-get update",
     "apt-get install -y ninja-build",
 ]
-manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:2025.11.03-1"
+manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:latest"
 
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux_*"
