@@ -62,7 +62,7 @@ select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
 environment-pass = ["RUNNER_ARCH"]
 inherit.before-all = "append"
 before-all = [
-    "pip install -U sigstore",
+    # TODO download/verify artifacts on host runner and have them copied into the container
     "bash ./utils/install-static-clang.sh",
 ]
 inherit.environment = "append"
