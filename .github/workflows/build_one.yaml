@@ -41,6 +41,10 @@ jobs:
         if: ${{ !(inputs.cibw_arch == 'x86_64' || inputs.cibw_arch == 'aarch64') }}
         uses: docker/setup-qemu-action@v4
       
+      - name: Download clang image
+        if: ${{ endsWith(inputs.cibw_os, 'linux') && contains(fromJson('["ppc64le","riscv64","loongarch64","s390x"]'), inputs.cibw_arch) }}
+        run: bash ./utils/install-static-clang.sh -d ./clang_image -m download-only
+      
       - name: Build wheels
         uses: loong64/cibuildwheel@e2eb224eba52e082e342e0d7d7e1443a22a170f2  # v4.1.0
         env:

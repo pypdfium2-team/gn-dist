@@ -62,8 +62,7 @@ select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
 environment-pass = ["RUNNER_ARCH"]
 inherit.before-all = "append"
 before-all = [
-    # TODO download/verify artifacts on host runner and have them copied into the container
-    "bash ./utils/install-static-clang.sh",
+    "bash ./utils/install-static-clang.sh -d {project}/clang_image -m skip-download",
 ]
 inherit.environment = "append"
 environment.BUILD_PARAMS = "-c clang --clang-path /opt/clang"
