@@ -13,14 +13,13 @@ except ImportError:
     from wheel.bdist_wheel import bdist_wheel
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build_gn import parse_args, assisted_build  # local
+import build_gn  # local
 
 
 class BuildPyClass(build_py):
     def run(self):
-        build_params = os.environ.get("BUILD_PARAMS", "")
-        args = parse_args(shlex.split(build_params))
-        assisted_build(**vars(args))
+        argv = shlex.split( os.environ.get("BUILD_PARAMS", "") )
+        build_gn.main(argv)
         build_py.run(self)
 
 class BdistWheelClass(bdist_wheel):

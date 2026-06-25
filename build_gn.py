@@ -23,14 +23,14 @@ def run_cmd(command, cwd, **kwargs):
     log(f"{command} (cwd={cwd})")
     return subprocess.run(command, cwd=cwd, check=True, **kwargs)
 
-def _make_executable(path):
-    path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-
-def _env_prepend(key, value, sep):
+def env_prepend(key, value, sep):
     tail = os.environ.get(key, "")
     if tail:
         tail = sep + tail
     os.environ[key] = value + tail
+
+def _make_executable(path):
+    path.chmod(path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
 
 def build(env=None):
@@ -68,7 +68,7 @@ def assisted_build(compiler=None, toolprefix="", clang_path=None):
     elif compiler == "clang":
         toolset = CompilerToolset(CXX="clang++", AR="llvm-ar")
         if clang_path:
-            _env_prepend("PATH", str(clang_path/"bin"), os.pathsep)
+            env_prepend("PATH", str(clang_path/"bin"), os.pathsep)
     elif compiler == "custom":
         toolset = CompilerToolset(
             CXX=os.environ["CXX"], AR=os.environ["AR"], LD=os.environ.get("LD"),
@@ -106,8 +106,10 @@ def parse_args(argv):
     return parser.parse_args(argv)
 
 
-def main():
-    args = parse_args(sys.argv[1:])
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    args = parse_args(argv)
     assisted_build(**vars(args))
 
 
