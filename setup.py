@@ -20,11 +20,11 @@ class BuildPyClass(build_py):
     def run(self):
         argv = shlex.split( os.environ.get("BUILD_PARAMS", "") )
         build_gn.main(argv)
-        build_py.run(self)
+        super().run()
 
 class BdistWheelClass(bdist_wheel):
     def get_tag(self, *args, **kws):
-        _py, _abi, plat_tag = bdist_wheel.get_tag(self, *args, **kws)
+        _py, _abi, plat_tag = super().get_tag(*args, **kws)
         return "py3", "none", plat_tag
 
 class BinaryDistribution (setuptools.Distribution):
