@@ -23,12 +23,16 @@ on:
   workflow_dispatch:
     inputs: *reusable_inputs
 
+permissions: {}
+
 jobs:
   
   build_one:
     name: ${{ inputs.cibw_os }}_${{ inputs.cibw_arch }} on ${{ inputs.os }}
     runs-on: ${{ inputs.os }}
     # if: ${{ inputs.condition }}
+    permissions:
+      contents: read  # recommended by checkout action
     
     steps:
       

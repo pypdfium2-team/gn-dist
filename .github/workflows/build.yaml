@@ -12,9 +12,13 @@ on:
         type: boolean
         default: false
 
+permissions: {}
+
 jobs:
   
   build:
+    permissions:
+      contents: read  # needed by called workflow
     strategy:
       fail-fast: false
       matrix:
@@ -30,6 +34,10 @@ jobs:
   
   
   sdist:
+    name: Craft sdist
+    permissions:
+      contents: read  # recommended by checkout action
+    
     runs-on: ubuntu-latest
     steps:
       
@@ -55,11 +63,12 @@ jobs:
   
   
   publish:
+    name: Publish to PyPI & GH
     needs: [build, sdist]
     if: ${{ inputs.publish && !cancelled() && !contains(needs.*.result, 'failure') }}
     runs-on: ubuntu-latest
     
-    environment: release  # PyPI upload via "trusted publishing"
+    environment: release   # PyPI upload via "trusted publishing"
     permissions:
       id-token: write      # PyPI upload via "trusted publishing", and GH attestation
       attestations: write  # GH attestation
@@ -125,6 +134,7 @@ jobs:
         env:
           SRC_PATH: ${{ steps.provenance.outputs.bundle-path }}
       
+      # TODO migrate to `gh release`
       - name: Publish to GitHub
         uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
