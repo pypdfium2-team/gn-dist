@@ -1,1 +1,4 @@
+# SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause OR CC-BY-4.0
+
 include build_gn.py
