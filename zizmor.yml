@@ -5,3 +5,7 @@ rules:
   # Opinions differ on what is or isn't a misfeature. Disable. (FWIW, we like setup-python's pip-install input.)
   misfeature:
     disable: true
+  # As with pypdfium2, there is not much point trying to regulate workflow concurrency here.
+  # Disable to keep focused on findings that matter.
+  concurrency-limits:
+    disable: true
