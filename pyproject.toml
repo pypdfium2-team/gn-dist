@@ -33,6 +33,9 @@ test-command = [
     # TODO ...
 ]
 
+[tool.cibuildwheel.linux]
+manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:latest"
+
 # install ninja
 
 [[tool.cibuildwheel.overrides]]
@@ -49,7 +52,6 @@ before-all = [
     "apt-get update",
     "apt-get install -y ninja-build",
 ]
-manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:latest"
 
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux_*"
@@ -62,7 +64,8 @@ select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
 environment-pass = ["RUNNER_ARCH"]
 inherit.before-all = "append"
 before-all = [
-    "manylinux-install-clang",
+    # FIXME manylinux-install-clang lacks attestation verification
+    "manylinux-install-clang -v latest",
     "export CLANG_PREFIX=/opt/clang",
     "ln -s $CLANG_PREFIX/bin/readelf $CLANG_PREFIX/bin/llvm-readelf",
 ]
