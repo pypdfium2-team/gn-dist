@@ -64,8 +64,7 @@ select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
 environment-pass = ["RUNNER_ARCH"]
 inherit.before-all = "append"
 before-all = [
-    # NOTE manylinux-install-clang lacks attestation verification, but static-clang-images have immutable releases, so use a pinned version for safety
-    "manylinux-install-clang -v 22.1.8.1",
+    "manylinux-install-clang -v latest",
     "export CLANG_PREFIX=/opt/clang",
     "ln -s $CLANG_PREFIX/bin/readelf $CLANG_PREFIX/bin/llvm-readelf",
 ]
