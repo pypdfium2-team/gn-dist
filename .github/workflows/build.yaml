@@ -128,12 +128,12 @@ jobs:
           SRC_PATH: ${{ steps.provenance.outputs.bundle-path }}
       
       - name: Publish to GitHub
-        run: gh release create "$TAG" --verify-tag --fail-on-no-commits $BETA_FLAG $ARTIFACTS
+        run: gh release create "$TAG" --title "$TAG" --verify-tag --fail-on-no-commits $BETA_FLAG $ARTIFACTS
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.get_version.outputs.version }}
+          BETA_FLAG: ${{ contains(steps.get_version.outputs.version, 'b') && '--prerelease' || '' }}
           ARTIFACTS: 'artifacts/*.whl artifacts/*.tar.gz gn-attestation.json'
-          BETA_FLAG: ${{ contains(steps.get_version.outputs.version, 'b') && '--prerelease' }}
       
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
