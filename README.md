@@ -31,7 +31,7 @@ https://chrome-infra-packages.appspot.com/p/gn/gn
 To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.
 
 Then run `src/gn_dist/gn --version` and manually update the `version` field in `pyproject.toml`.<br/>
-Also, you may want to update the cibuildwheel pin in `build_one.yaml`, and the clang pin in `pyproject.toml`.
+Also, you may want to update the cibuildwheel pin in `build_one.yaml`, and the clang version in `pyproject.toml`.
 
 Commit and push the changes. Finally, go to the Actions panel and run `Build` with the `publish` option checked.
 
