@@ -133,7 +133,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.get_version.outputs.version }}
           BETA_FLAG: ${{ contains(steps.get_version.outputs.version, 'b') && '--prerelease' || '' }}
-          ARTIFACTS: 'artifacts/*.whl artifacts/*.tar.gz gn-attestation.json'
+          ARTIFACTS: 'artifacts/* gn-attestation.json'
       
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
