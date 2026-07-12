@@ -27,7 +27,7 @@ jobs:
     
     uses: ./.github/workflows/build_one.yaml
     with:
-      os: ${{ (matrix.cibw_arch == 'aarch64' || matrix.cibw_arch == 'armv7l') && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+      os: ${{ (matrix.cibw_arch == 'aarch64' || matrix.cibw_arch == 'armv7l') && 'ubuntu-26.04-arm' || 'ubuntu-26.04' }}
       cibw_os: ${{ matrix.cibw_os }}
       cibw_arch: ${{ matrix.cibw_arch }}
       cibw_py_ver: ${{ inputs.cibw_py_ver }}
@@ -38,7 +38,7 @@ jobs:
     permissions:
       contents: read  # recommended by checkout action
     
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       
       - name: Check out the repo
@@ -66,7 +66,7 @@ jobs:
     name: Publish to PyPI & GH
     needs: [build, sdist]
     if: ${{ inputs.publish && !cancelled() && !contains(needs.*.result, 'failure') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     
     environment: release   # PyPI upload via "trusted publishing"
     permissions:
@@ -101,10 +101,11 @@ jobs:
           merge-multiple: true
           pattern: cibw-*
       
-      - name: Isolate non-PyPI builds
+      - name: Mask non-PyPI builds
         run: |
-          mkdir gh_only
-          mv dist/*linux_*_loongarch64*.whl gh_only/
+          mkdir artifacts/ && cp dist/* -t artifacts/
+          shopt -s nullglob
+          rm -f dist/*linux_*_loongarch64*.whl
       
       - name: Apply and push repository changes
         run: |
@@ -115,34 +116,23 @@ jobs:
         env:
           NEW_VERSION: ${{ steps.get_version.outputs.version }}
       
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          packages-dir: dist/
-          attestations: false
-          verbose: true
-      
       - name: Attest build provenance
         id: provenance
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
-          subject-path: 'dist/*, gh_only/*'
+          subject-path: 'artifacts/*'
       
       - name: Rename provenance file
         run: mv "$SRC_PATH" gn-attestation.json
         env:
           SRC_PATH: ${{ steps.provenance.outputs.bundle-path }}
       
-      # TODO migrate to `gh release`
       - name: Publish to GitHub
-        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
-        with:
-          immutableCreate: true
-          artifacts: 'dist/*.whl,gh_only/*.whl,dist/*.tar.gz,gn-attestation.json'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.get_version.outputs.version }}
-          prerelease: ${{ contains(steps.get_version.outputs.version, 'b') }}
+        run: gh release create "$TAG" --title "$TAG" --verify-tag --fail-on-no-commits $BETA_FLAG artifacts/* gn-attestation.json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.get_version.outputs.version }}
+          BETA_FLAG: ${{ contains(steps.get_version.outputs.version, 'b') && '--prerelease' || '' }}
       
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
