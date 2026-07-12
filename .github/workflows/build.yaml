@@ -11,6 +11,9 @@ on:
       publish:
         type: boolean
         default: false
+      actually_publish:
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -108,6 +111,7 @@ jobs:
           rm -f dist/*linux_*_loongarch64*.whl
       
       - name: Apply and push repository changes
+        if: ${{ inputs.actually_publish }}
         run: |
           git config user.email "geisserml@gmail.com"
           git config user.name "geisserml"
@@ -117,22 +121,26 @@ jobs:
           NEW_VERSION: ${{ steps.get_version.outputs.version }}
       
       - name: Attest build provenance
+        if: ${{ inputs.actually_publish }}
         id: provenance
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
           subject-path: 'artifacts/*'
       
       - name: Rename provenance file
+        if: ${{ inputs.actually_publish }}
         run: mv "$SRC_PATH" gn-attestation.json
         env:
           SRC_PATH: ${{ steps.provenance.outputs.bundle-path }}
       
       - name: Publish to PyPI
+        if: ${{ inputs.actually_publish }}
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
         with:
           packages-dir: dist/
       
       - name: Publish to GitHub
+        if: ${{ inputs.actually_publish }}
         run: gh release create "$TAG" --title "$TAG" --verify-tag --fail-on-no-commits $BETA_FLAG artifacts/* gn-attestation.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

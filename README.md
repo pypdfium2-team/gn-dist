@@ -33,7 +33,7 @@ To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild lo
 Then run `src/gn_dist/gn --version` and manually update the `version` field in `pyproject.toml`.<br/>
 Also, you may want to update the cibuildwheel pin in `build_one.yaml`, and the clang version in `pyproject.toml`.
 
-Commit and push the changes. Finally, go to the Actions panel and run `Build` with the `publish` option checked.
+Commit and push the changes. Finally, go to the Actions panel and run `Build` with the `publish` and `actually_publish` options checked.
 
 ### History
 
