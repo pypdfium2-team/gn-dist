@@ -141,7 +141,7 @@ jobs:
       
       - name: Publish to GitHub
         if: ${{ inputs.actually_publish }}
-        run: gh release create "$TAG" --title "$TAG" --verify-tag --fail-on-no-commits $BETA_FLAG artifacts/* gn-attestation.json
+        run: gh release create "$TAG" --title "$TAG" --verify-tag $BETA_FLAG artifacts/* gn-attestation.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.get_version.outputs.version }}
