@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           path: ./dist/*.tar.gz
-          name: sdist
+          name: dist-sdist
   
   
   publish:
@@ -91,18 +91,12 @@ jobs:
           echo "Determined version $VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       
-      - name: Download sdist
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          path: dist/
-          name: sdist
-      
-      - name: Download wheels
+      - name: Download assets
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: dist/
           merge-multiple: true
-          pattern: cibw-*
+          pattern: dist-*
       
       - name: Mask non-PyPI builds
         run: |
