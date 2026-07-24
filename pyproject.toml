@@ -25,6 +25,11 @@ where = ["src"]
 [tool.setuptools.package-data]
 gn_dist = ["gn"]
 
+[tool.check-wheel-contents]
+# W002: possible erroneous detection of __init__.py files as duplicates
+# W009: Wheel contains multiple toplevel library entries
+# W010: Toplevel library directory contains no Python modules (gn_dist.libs)
+ignore = ["W002", "W009", "W010"]
 
 [tool.cibuildwheel]
 build-frontend = "build"
