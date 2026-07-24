@@ -2,3 +2,4 @@
 # SPDX-License-Identifier: BSD-3-Clause OR CC-BY-4.0
 
 include build_gn.py
+include src/gn_dist/VERSION

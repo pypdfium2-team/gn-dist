@@ -31,13 +31,11 @@ export PATH="$GN_DIR:$PATH"
 ### Updating (for maintainers)
 
 To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.<br>
-Then run `src/gn_dist/gn --version` and manually update the `version` field in `pyproject.toml`.<br>
-Commit and push the changes. Also, create and push a tag that matches the new version:
+Commit the changes. Then run `src/gn_dist/gn --version` to determine the version, and create a matching tag (add a minor cipher if it's a rebuild):
 ```bash
 git tag -a VERSION -m "Release"
-git push --tags
 ```
-Finally, go to the Actions panel and run `Build` with the `publish` and `actually_publish` options checked.
+Push commit and tag. Finally, go to the Actions panel and run `Build` with the `publish` and `actually_publish` options checked.
 
 Once a release has been successfully published to GitHub, tag protection from immutable releases will lock the tag in place.
 However, if anything goes wrong before that, you may just revoke the tag as usual:
@@ -45,7 +43,7 @@ However, if anything goes wrong before that, you may just revoke the tag as usua
 git tag -d VERSION
 git push --delete origin VERSION
 ```
-Then you can fix things up and eventually re-create the tag on a different commit.
+Then you can fix things up and eventually re-create the tag on another commit.
 
 ### History
 

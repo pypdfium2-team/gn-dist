@@ -36,10 +36,11 @@ jobs:
     
     steps:
       
-      - name: Check out the repo
+      - name: Check out repository (deep)
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
+          fetch-depth: 0  # for git describe
       
       - name: Set up QEMU
         if: ${{ !(inputs.cibw_arch == 'x86_64' || inputs.cibw_arch == 'aarch64') }}
