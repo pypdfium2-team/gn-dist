@@ -5,6 +5,8 @@
 
 Binary distributions of GN (generate-ninja) for Linux (glibc and musl).
 
+Upstream: https://gn.googlesource.com/gn
+
 ### Installation
 ```bash
 python3 -m pip install gn-dist
@@ -47,3 +49,5 @@ If you are looking for PyPI builds of `ninja`,
 [`scikit-build/ninja-python-distributions`](https://github.com/scikit-build/ninja-python-distributions)
 is somewhat equivalent to this project.
 Note though, it uses Kitware's fork of ninja, not the original version.
+
+There is also [`loong64/gn`](https://github.com/loong64/gn), but for some reason refers to a [little-known fork of GN](https://github.com/timniederhausen/gn), is not regularly updated, does not include musllinux builds, and is not Python packaged.
