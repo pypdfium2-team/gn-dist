@@ -19,9 +19,6 @@ repository = "https://github.com/pypdfium2-team/gn-dist"
 [project.scripts]
 gn = "gn_dist.__main__:main"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-
 [tool.setuptools.package-data]
 gn_dist = ["gn"]
 
