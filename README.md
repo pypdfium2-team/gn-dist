@@ -3,9 +3,12 @@
 
 # gn-dist
 
-Binary distributions of GN (generate-ninja) for Linux (glibc and musl).
+Binary distributions of [GN][] (generate-ninja) for Linux (glibc and musl).
 
-Upstream: https://gn.googlesource.com/gn
+Other systems are out of scope for this project. For Windows and macOS builds, please refer to [Google CIPD][].
+
+[GN]: https://gn.googlesource.com/gn
+[Google CIPD]: https://chrome-infra-packages.appspot.com/p/gn/gn
 
 ### Installation
 ```bash
@@ -25,17 +28,24 @@ export PATH="$GN_DIR:$PATH"
 # ^ add this to your ~/.bashrc if you want
 ```
 
-For Windows and macOS, you'll want Google's builds from CIPD:<br/>
-https://chrome-infra-packages.appspot.com/p/gn/gn
+### Updating (for maintainers)
 
-### Updating
+To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.<br>
+Then run `src/gn_dist/gn --version` and manually update the `version` field in `pyproject.toml`.<br>
+Commit and push the changes. Also, create and push a tag that matches the new version:
+```bash
+git tag -a VERSION -m "Release"
+git push --tags
+```
+Finally, go to the Actions panel and run `Build` with the `publish` and `actually_publish` options checked.
 
-To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.
-
-Then run `src/gn_dist/gn --version` and manually update the `version` field in `pyproject.toml`.<br/>
-Also, you may want to update the cibuildwheel pin in `build_one.yaml`, and the clang version in `pyproject.toml`.
-
-Commit and push the changes. Finally, go to the Actions panel and run `Build` with the `publish` and `actually_publish` options checked.
+Once a release has been successfully published to GitHub, tag protection from immutable releases will lock the tag in place.
+However, if anything goes wrong before that, you may just revoke the tag as usual:
+```bash
+git tag -d VERSION
+git push --delete origin VERSION
+```
+Then you can fix things up and eventually re-create the tag on a different commit.
 
 ### History
 
@@ -51,4 +61,4 @@ If you are looking for PyPI builds of `ninja`,
 is somewhat equivalent to this project.
 Note though, it uses Kitware's fork of ninja, not the original version.
 
-There is also [`loong64/gn`](https://github.com/loong64/gn), but for some reason refers to a [little-known fork of GN](https://github.com/timniederhausen/gn), is not regularly updated, does not include musllinux builds, and is not Python packaged.
+There is also [`loong64/gn`](https://github.com/loong64/gn), but for some reason refers to a little-known fork of GN, is not regularly updated, does not include musllinux builds, and is not Python packaged.
