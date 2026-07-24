@@ -42,6 +42,7 @@ Commit and push the changes. Finally, go to the Actions panel and run `Build` wi
 See below for some background why `gn-dist` was created:
 - https://groups.google.com/g/pdfium/c/1__HW-wzJ8c/m/5MCYXAuDBQAJ
 - https://chromium-review.googlesource.com/c/chromium/src/+/7593779/comments/fdd2633a_eb123349
+- https://gn.googlesource.com/gn/+/88604adbcec2101f25b2e3ebd7f39b38163a6a33/README.md#versioning-and-distribution
 
 ### Related work
 
