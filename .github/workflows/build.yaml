@@ -54,13 +54,15 @@ jobs:
         with:
           python-version: '3.14'
       
-      - name: Install pip packages (cool)
-        run: python3 -m pip install build setuptools
+      - name: Create venv & install pip packages (cool)
+        run: |
+          python3 -m venv .venv
+          ./.venv/bin/pip install build setuptools
         env:
           PIP_UPLOADED_PRIOR_TO: P12D
       
       - name: Package sdist
-        run: python3 -m build -sxn
+        run: ./.venv/bin/python3 -m build -sxn
       
       - name: Upload sdist
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -100,13 +102,16 @@ jobs:
         with:
           python-version: '3.14'
       
-      - name: Install pip packages (frozen)
-        run: python3 -m pip install -U twine check-wheel-contents
+      - name: Create venv & install pip packages (frozen)
+        run: |
+          python3 -m venv .venv
+          ./.venv/bin/pip install -U twine check-wheel-contents
         env:
           PIP_UPLOADED_PRIOR_TO: '2026-07-12T10:15:00Z'
       
       - name: Verify dists
         run: |
+          PATH="${PWD}/.venv/bin:${PATH}"
           twine check dist/*
           check-wheel-contents dist/*.whl
       
