@@ -112,8 +112,7 @@ jobs:
           ./.venv/bin/pip install -U "pip>=26,<=26.1.2"
           ./.venv/bin/pip install -U pip
           export PIP_UPLOADED_PRIOR_TO=P7D
-          # TODO use lockfile + dependabot security updates
-          ./.venv/bin/pip install -U twine check-wheel-contents
+          ./.venv/bin/pip install --require-hashes -r lock/distcheck.txt
       
       - name: Verify dists
         run: |
