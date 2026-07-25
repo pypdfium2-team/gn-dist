@@ -111,6 +111,7 @@ jobs:
           export PIP_UPLOADED_PRIOR_TO=P3D
           ./.venv/bin/pip install -U "pip>=26,<=26.1.2"
           ./.venv/bin/pip install -U pip
+          # By default, keep a cooldown as sanity check for our lockfile. However, cooldown *could* be disabled if urgent updates to the lockfile were required (e.g. security). Just lower or unset PIP_UPLOADED_PRIOR_TO if needed.
           export PIP_UPLOADED_PRIOR_TO=P7D
           ./.venv/bin/pip install --no-deps --only-binary ':all:' --require-hashes -r lock/distcheck.txt
       
