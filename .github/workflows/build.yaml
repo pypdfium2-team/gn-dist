@@ -58,9 +58,11 @@ jobs:
       - name: Create venv & Install pip packages (cool)
         run: |
           python3 -m venv .venv
+          export PIP_UPLOADED_PRIOR_TO=P3D
+          ./.venv/bin/pip install "pip>=26,<=26.1.2"
+          ./.venv/bin/pip install -U pip
+          export PIP_UPLOADED_PRIOR_TO=P7D
           ./.venv/bin/pip install build setuptools
-        env:
-          PIP_UPLOADED_PRIOR_TO: P12D
       
       - name: Package sdist
         run: ./.venv/bin/python3 -m build -sxn
@@ -106,9 +108,12 @@ jobs:
       - name: Create venv & Install pip packages (frozen)
         run: |
           python3 -m venv .venv
+          export PIP_UPLOADED_PRIOR_TO=P3D
+          ./.venv/bin/pip install -U "pip>=26,<=26.1.2"
+          ./.venv/bin/pip install -U pip
+          export PIP_UPLOADED_PRIOR_TO=P7D
+          # TODO use lockfile + dependabot security updates
           ./.venv/bin/pip install -U twine check-wheel-contents
-        env:
-          PIP_UPLOADED_PRIOR_TO: '2026-07-12T10:15:00Z'
       
       - name: Verify dists
         run: |
