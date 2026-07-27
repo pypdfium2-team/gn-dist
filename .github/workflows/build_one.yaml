@@ -37,7 +37,7 @@ jobs:
     steps:
       
       - name: Check out repository (deep)
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0  # for git describe
@@ -47,7 +47,7 @@ jobs:
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
       
       - name: Build wheels
-        uses: loong64/cibuildwheel@e2eb224eba52e082e342e0d7d7e1443a22a170f2 # v4.1.0
+        uses: loong64/cibuildwheel@e1f483ac54bae73808efc6e5888b05eae9c478ba # v4.1.1
         env:
           CIBW_BUILD: "${{ inputs.cibw_py_ver }}-${{ inputs.cibw_os }}_${{ inputs.cibw_arch }}"
           CIBW_ARCHS: "${{ inputs.cibw_arch }}"
