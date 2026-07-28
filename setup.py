@@ -37,7 +37,7 @@ def infer_version():
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         log(e)
         if not VERSION_FILE.exists():
-            raise FileNotFoundError("If `git describe` is unavailable, a src/gn_dist/VERSION file must be supplied. (Advice: If it's a shallow clone, either run `git fetch --unshallow`, or clone a tagged commit and run `git fetch --tags` to make `git describe` work.)")
+            raise FileNotFoundError("If `git describe` is unavailable, a src/gn_dist/VERSION file must be provided. (Advice: If it's a shallow clone, either run `git fetch --unshallow`, or clone a tagged commit and run `git fetch --tags` to make `git describe` work.)")
         version = VERSION_FILE.read_text().strip()
     assert version, "Version must be non-empty"
     return version
@@ -63,4 +63,13 @@ setuptools.setup(
     version = infer_version(),
     cmdclass = {"build_py": BuildPyClass, "bdist_wheel": BdistWheelClass},
     distclass = BinaryDistribution,
+    # The following is required for compatibility with python 3.6 and its max setuptools version.
+    # Note: Re-declaring `name` does not seem to conflict with pyproject.toml (if supported, pyproject.toml wins). This just avoids getting "UNKNOWN" as project name.
+    name="gn-dist",
+    package_dir = {"gn_dist": "src/gn_dist"},
+    packages = setuptools.find_packages(where='src', include=["gn_dist*"]),
+    # [project.scripts]
+    entry_points = {"console_scripts": ["gn = gn_dist.__main__:main"]},
+    # [tool.setuptools.package-data]
+    package_data = {"gn_dist": ["gn"]},
 )

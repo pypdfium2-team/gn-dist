@@ -109,7 +109,7 @@ jobs:
         with:
           python-version: '3.14'
       
-        # By default, keep a cooldown as sanity check for our lockfiles. However, cooldown *could* be disabled if urgent updates to the lockfiles were required (e.g. security). Just lower or unset PIP_UPLOADED_PRIOR_TO if needed.
+      # By default, keep a cooldown as sanity check for our lockfiles. However, cooldown *could* be disabled if urgent updates to the lockfiles were required (e.g. security). Just lower or unset PIP_UPLOADED_PRIOR_TO if needed.
       - name: Create venv & Install pip packages (frozen)
         run: |
           python3 -m venv .venv

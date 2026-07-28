@@ -1,0 +1,16 @@
+diff --git a/build/gen.py b/build/gen.py
+index 736f6098..da899a5e 100755
+--- a/build/gen.py
++++ b/build/gen.py
+@@ -239,8 +239,9 @@ def is_gcc(cxx):
+       f'{cxx} -dM -E -',
+       shell=True,
+       stdin=subprocess.DEVNULL,
+-      text=True,
+-      capture_output=True)
++      universal_newlines=True,
++      stdout=subprocess.PIPE,
++      stderr=subprocess.STDOUT)
+ 
+   return ret.returncode == 0 and "#define __GNUC__" in ret.stdout and not "#define __clang__" in ret.stdout
+ 

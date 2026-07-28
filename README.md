@@ -28,6 +28,66 @@ export PATH="$GN_DIR:$PATH"
 # ^ add this to your ~/.bashrc if you want
 ```
 
+### Building
+
+[`./build_gn.py`](build_gn.py) automates the build process (run with `--help` for options, as usual).
+
+gn-dist's setup implies building GN. Run e.g. `pip install -v .` or `pyproject-build -wxn`.<br>
+Set `$BUILD_PARAMS` to pass options to `build_gn.py` through the setup layer.
+
+#### Versioning
+
+gn-dist (and GN itself) use `git` to infer version info.
+
+This is known to cause issues with shallow checkouts.
+We recommend that you configure your clone of gn-dist in a way that allows `git describe` to do its job.
+
+Where that is not possible (e.g. when installing from a tarball that does not contain the git repository) a `src/gn_dist/VERSION` file must be provided.<br>
+This is just a plain text file containing the version string that will be passed to gn-dist's PEP 517 build backend.
+The version should be provided as a [PEP 440 / PyPA specs](https://packaging.python.org/en/latest/specifications/version-specifiers/#version-specifiers) compatible normalization of what would otherwise be returned by `git describe`.<br>
+The `VERSION` file is included in sdists and will be auto-generated where possible.
+
+GN checkout is typically managed by gn-dist itself (which does a full clone), but if you insist on bringing your own copy of GN, you may need to provide a `//out/last_commit_position.h` file (relative to `//sbuild/gn`), in the following format:
+```hpp
+#ifndef OUT_LAST_COMMIT_POSITION_H_
+#define OUT_LAST_COMMIT_POSITION_H_
+
+#define LAST_COMMIT_POSITION_NUM %(num)s
+#define LAST_COMMIT_POSITION "%(num)s (%(commit_id)s)"
+
+#endif  // OUT_LAST_COMMIT_POSITION_H_
+```
+where `%(num)s` is the commit number (counted from the initial commit), and `%(commit_id)s` the commit hash (truncated to the first 12 digits), as in
+```bash
+git describe HEAD --abbrev=12 --match initial-commit
+```
+Then edit `build_gn.py` to pass `--no-last-commit-position` to GN's `build/gen.py`.
+
+#### Containerization
+
+To manually build gn-dist in a manylinux2014 container, you can do e.g.:
+
+```bash
+docker run -v "${PWD}:/projects/gn-dist" --security-opt label=disable -it quay.io/pypa/manylinux2014_x86_64 bash
+```
+```bash
+# this would test python 3.6 compatibility - to use a contemporary version of python, comment in the lines below instead
+yum install -y python3
+#manylinux-interpreters ensure cp314-cp314
+#export PATH="/opt/python/cp314-cp314/bin:${PATH}"
+manylinux-install-clang -v latest
+python3 -m venv /projects/.venv
+export PATH="$/projects/.venv/bin:${PATH}"
+python3 -m pip install -U pip
+python3 -m pip install -U setuptools wheel build auditwheel
+python3 -m pip install -U ninja  # scikit-build/ninja-python-distributions
+cd /projects/gn-dist
+./build_gn.py --help  # informational
+BUILD_PARAMS="-c clang --clang-path /opt/clang" python3 -m build -wxn
+#auditwheel repair dist/gn_dist-*.whl
+```
+<!-- TODO fix purelib vs. platlib issue with older python, then enable `auditwheel repair` above -->
+
 ### Updating (for maintainers)
 
 To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.<br>

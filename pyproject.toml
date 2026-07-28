@@ -5,9 +5,10 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools"]
 
+# TODO consider removing the project table altogether, as it is potentially impedimental to backward compatibility
 [project]
 name = "gn-dist"
-dynamic = ["version"]
+dynamic = ["version", "scripts"]
 description = "Binary distributions of GN (generate-ninja) for Linux."
 readme = "README.md"
 authors = [{ name = "pypdfium2-team", email = "geisserml@gmail.com" }]
@@ -15,12 +16,6 @@ license = "BSD-3-Clause"
 
 [project.urls]
 repository = "https://github.com/pypdfium2-team/gn-dist"
-
-[project.scripts]
-gn = "gn_dist.__main__:main"
-
-[tool.setuptools.package-data]
-gn_dist = ["gn"]
 
 [tool.check-wheel-contents]
 # W002: possible erroneous detection of __init__.py files as duplicates

@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
 # SPDX-License-Identifier: BSD-3-Clause
 
@@ -41,17 +42,19 @@ def build(env=None):
     if not GN_DIR.exists():
         run_cmd(["git", "clone", "https://gn.googlesource.com/gn/"], cwd=SBUILD_DIR)
         run_cmd(["git", "checkout", GN_REV], cwd=GN_DIR)
+        run_cmd(["git", "apply", "-v", "--ignore-whitespace", str(PROJECT_DIR/"patches"/"py36.patch")], cwd=GN_DIR)
     
     args = [sys.executable, "build/gen.py", "--allow-warnings", "--no-static-libstdc++"]
     run_cmd(args, cwd=GN_DIR, env=env)
     # TODO on CI, build and run unittests
     run_cmd(["ninja", "-C", "out", "gn"], cwd=GN_DIR)
+    # TODO isolate gn binary in a subdirectory so it can be added to path more cleanly
     target_path = PROJECT_DIR/"src"/"gn_dist"/"gn"
     shutil.copyfile(GN_DIR/"out"/"gn", target_path)
     _make_executable(target_path)
 
 
-CompilerToolset = namedtuple("CompilerToolset", ("CXX", "AR", "LD"), defaults=(None, ))
+CompilerToolset = namedtuple("CompilerToolset", ("CXX", "AR", "LD"))
 
 def assisted_build(compiler=None, toolprefix="", clang_path=None):
     
@@ -64,9 +67,9 @@ def assisted_build(compiler=None, toolprefix="", clang_path=None):
             raise RuntimeError("A compiler is needed, but neither g++ nor clang++ were found")
     
     if compiler == "gcc":
-        toolset = CompilerToolset(CXX=toolprefix+"g++", AR=toolprefix+"ar")
+        toolset = CompilerToolset(CXX=toolprefix+"g++", AR=toolprefix+"ar", LD=None)
     elif compiler == "clang":
-        toolset = CompilerToolset(CXX="clang++", AR="llvm-ar")
+        toolset = CompilerToolset(CXX="clang++", AR="llvm-ar", LD=None)
         if clang_path:
             env_prepend("PATH", str(clang_path/"bin"), os.pathsep)
     elif compiler == "custom":
