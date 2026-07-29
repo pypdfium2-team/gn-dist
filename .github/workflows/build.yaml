@@ -82,7 +82,7 @@ jobs:
     name: ${{ inputs.actually_publish && 'Publish to PyPI & GH (actually)' || 'Publish (dry run)' }}
     needs: [build, sdist]
     if: ${{ inputs.publish && !cancelled() && !contains(needs.*.result, 'failure') }}
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-24.04  # gh-action-pypi-publish doesn't seem to like ubuntu-slim
     
     environment: release   # PyPI upload via "trusted publishing"
     permissions:
