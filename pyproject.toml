@@ -43,12 +43,13 @@ before-all = [
     "dnf -y install ninja-build",
 ]
 
-# [[tool.cibuildwheel.overrides]]
-# select = "*-manylinux_i686"
-# inherit.before-all = "none"
-# before-all = []
-# inherit.before-build = "append"
-# before-build = ["pip install -U ninja"]
+# temporary workaround because dnf somehow fails to resolve a working mirror
+[[tool.cibuildwheel.overrides]]
+select = "*-manylinux_i686"
+inherit.before-all = "none"
+before-all = []
+inherit.before-build = "append"
+before-build = ["pip install -U ninja"]
 
 # manylinux_armv7l uses a Ubuntu-based image, for lack of an RHEL-based one
 [[tool.cibuildwheel.overrides]]

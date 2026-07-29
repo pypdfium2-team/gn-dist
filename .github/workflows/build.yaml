@@ -27,10 +27,11 @@ jobs:
       matrix:
         cibw_os: ["manylinux", "musllinux"]
         cibw_arch: ["x86_64", "i686", "aarch64", "armv7l", "ppc64le", "s390x", "riscv64", "loongarch64"]
-        exclude:
-          # Container failure (persistent since a few weeks): Cannot download repomd.xml
-          - cibw_os: manylinux
-            cibw_arch: i686
+        # exclude:
+        #   # Container failure (persistent since a few weeks): Cannot download repomd.xml
+        #   # NOTE now worked around by using scikit-build/ninja-python-distributions
+        #   - cibw_os: manylinux
+        #     cibw_arch: i686
     
     uses: ./.github/workflows/build_one.yaml
     with:
