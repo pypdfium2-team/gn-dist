@@ -8,6 +8,7 @@ requires = ["setuptools"]
 # TODO consider removing the project table altogether, as it is potentially impedimental to backward compatibility
 [project]
 name = "gn-dist"
+requires-python = ">=3.6"
 dynamic = ["version", "scripts"]
 description = "Binary distributions of GN (generate-ninja) for Linux."
 readme = "README.md"
