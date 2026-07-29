@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: 2026 geisserml <geisserml@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: Trigger Release
+on:
+  push:
+    tags:
+      - '*'
+
+permissions: {}
+
+jobs:
+  trigger:
+    name: Trigger release workflow
+    permissions:
+      actions: write  # allow workflow dispatch
+    
+    runs-on: ubuntu-slim
+    steps:
+      - name: Dispatch build.yaml with GH CLI
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: echo "$INPUTS" | gh workflow run "$WORKFLOW_FILE" -R "$REPOSITORY" --ref "$REF_NAME" --json
+        env:
+          WORKFLOW_FILE: build.yaml
+          INPUTS: |
+            {
+              "cibw_py_ver": "cp314",
+              "publish": "true",
+              "actually_publish": "true"
+            }
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          REF_NAME: ${{ github.ref_name }}

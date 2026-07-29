@@ -91,11 +91,11 @@ BUILD_PARAMS="-c clang --clang-path /opt/clang" python3 -m build -wxn
 ### Updating (for maintainers)
 
 To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.<br>
-Commit the changes. Then run `src/gn_dist/gn --version` to determine the version, and create a matching tag (add a minor cipher if it's a rebuild):
+Commit and push the changes. Then run `src/gn_dist/gn --version` to determine the version, and create a matching tag (add a minor cipher if it's a rebuild):
 ```bash
 git tag -a VERSION -m "Release"
 ```
-Push commit and tag. Finally, go to the Actions panel and run `Build` with the `publish` and `actually_publish` options checked.
+Once you're positive, push the tag. For maintainer convenience, pushing a tag that points to the `HEAD` of `main` will automatically trigger the build workflow with publish options enabled.
 
 Once a release has been successfully published to GitHub, tag protection from immutable releases will lock the tag in place.
 However, if anything goes wrong before that, you may just revoke the tag as usual:
