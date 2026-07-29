@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: Dispatch build.yaml with GH CLI
-        if: ${{ github.ref == 'refs/heads/main' }}
         run: echo "$INPUTS" | gh workflow run "$WORKFLOW_FILE" -R "$REPOSITORY" --ref "$REF_NAME" --json
         env:
           WORKFLOW_FILE: build.yaml
