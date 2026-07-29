@@ -48,8 +48,8 @@ def build(env=None):
     run_cmd(args, cwd=GN_DIR, env=env)
     # TODO on CI, build and run unittests
     run_cmd(["ninja", "-C", "out", "gn"], cwd=GN_DIR)
-    # TODO isolate gn binary in a subdirectory so it can be added to path more cleanly
-    target_path = PROJECT_DIR/"src"/"gn_dist"/"gn"
+    target_path = PROJECT_DIR/"src"/"gn_dist"/"bin"/"gn"
+    target_path.parent.mkdir(exist_ok=True)
     shutil.copyfile(GN_DIR/"out"/"gn", target_path)
     _make_executable(target_path)
 

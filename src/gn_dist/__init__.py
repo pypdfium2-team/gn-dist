@@ -3,4 +3,4 @@
 
 from pathlib import Path
 
-GN = Path(__file__).parent.resolve() / "gn"
+GN = Path(__file__).parent.resolve() / "bin" / "gn"

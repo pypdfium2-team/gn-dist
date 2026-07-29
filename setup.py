@@ -67,9 +67,9 @@ setuptools.setup(
     # Note: Re-declaring `name` does not seem to conflict with pyproject.toml (if supported, pyproject.toml wins). This just avoids getting "UNKNOWN" as project name.
     name="gn-dist",
     package_dir = {"gn_dist": "src/gn_dist"},
-    packages = setuptools.find_packages(where='src', include=["gn_dist*"]),
+    packages = setuptools.find_namespace_packages(where='src', include=["gn_dist*"]),
     # [project.scripts]
     entry_points = {"console_scripts": ["gn = gn_dist.__main__:main"]},
     # [tool.setuptools.package-data]
-    package_data = {"gn_dist": ["gn"]},
+    package_data = {"gn_dist": ["bin/gn"]},
 )
