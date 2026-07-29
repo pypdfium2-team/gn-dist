@@ -17,6 +17,25 @@ jobs:
     
     runs-on: ubuntu-slim
     steps:
+      
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      
+      - name: Ensure HEAD of main
+        shell: python
+        run: |
+          import subprocess
+          def run(cmd):
+              p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE)
+              return p.stdout.decode().strip()
+          
+          current_sha = run("git rev-parse HEAD")
+          expected_sha = run("git ls-remote origin refs/heads/main").split("\t")[0]
+          if current_sha != expected_sha:
+              raise ValueError("Current revision is not the HEAD of main.")
+      
       - name: Dispatch build.yaml with GH CLI
         run: echo "$INPUTS" | gh workflow run "$WORKFLOW_FILE" -R "$REPOSITORY" --ref "$REF_NAME" --json
         env:
