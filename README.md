@@ -91,7 +91,7 @@ BUILD_PARAMS="-c clang --clang-path /opt/clang" python3 -m build -wxn
 ### Updating (for maintainers)
 
 To make a new release, first update the `GN_REV` in `build_gn.py` and rebuild locally.<br>
-Commit and push the changes. Then run `src/gn_dist/gn --version` to determine the version, and create a matching tag (add a minor cipher if it's a rebuild):
+Commit and push the changes. Then, assuming an editable install, run `gn --version` to determine the new version, and create a matching tag (add a minor cipher if it's a rebuild):
 ```bash
 git tag -a VERSION -m "Release"
 ```
