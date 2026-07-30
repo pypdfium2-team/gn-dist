@@ -63,10 +63,11 @@ jobs:
         run: |
           python3 -m venv .venv
           export PIP_UPLOADED_PRIOR_TO=P3D
-          ./.venv/bin/python3 -m pip install --no-deps --only-binary ':all:' -r lock/pip.txt
-          ./.venv/bin/python3 -m pip install -U pip
+          PIP_INSTALL="./.venv/bin/python3 -m pip install --only-binary ':all:'"
+          $PIP_INSTALL --no-deps -r lock/pip.txt
+          $PIP_INSTALL -U pip
           export PIP_UPLOADED_PRIOR_TO=P7D
-          ./.venv/bin/python3 -m pip install build setuptools
+          $PIP_INSTALL -U build setuptools
       
       - name: Package sdist
         run: ./.venv/bin/python3 -m build -sxn
@@ -115,14 +116,15 @@ jobs:
         run: |
           python3 -m venv .venv
           export PIP_UPLOADED_PRIOR_TO=P3D
-          ./.venv/bin/python3 -m pip install --no-deps --only-binary ':all:' -r lock/pip.txt
-          ./.venv/bin/python3 -m pip install -U pip
+          PIP_INSTALL="./.venv/bin/python3 -m pip install --only-binary ':all:'"
+          $PIP_INSTALL --no-deps -r lock/pip.txt
+          $PIP_INSTALL -U pip
           export PIP_UPLOADED_PRIOR_TO=P7D
-          ./.venv/bin/python3 -m pip install --no-deps --only-binary ':all:' -r lock/distcheck.txt
+          $PIP_INSTALL --no-deps -r lock/distcheck.txt
       
       - name: Verify dists
         run: |
-          PATH="${PWD}/.venv/bin:${PATH}"
+          export PATH="${PWD}/.venv/bin:${PATH}"
           twine check dist/*
           check-wheel-contents dist/*.whl
       
