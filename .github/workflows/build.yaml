@@ -27,14 +27,19 @@ jobs:
       matrix:
         cibw_os: ["manylinux", "musllinux"]
         cibw_arch: ["x86_64", "i686", "aarch64", "armv7l", "ppc64le", "s390x", "riscv64", "loongarch64"]
-        exclude:
-          # i686 container persistently fails since a couple of weeks - unable to do any kind of networking, neither system packages nor PyPI
-          - cibw_os: manylinux
-            cibw_arch: i686
+        include:
+          - cibw_arch: aarch64
+            runner_os: ubuntu-26.04-arm
+          - cibw_arch: armv7l
+            runner_os: ubuntu-26.04-arm
+          - cibw_arch: i686
+            cibw_os: manylinux
+            # docker container is unable to do any kind of networking on 26.04, for whatever reason (affects pypdfium2 as well) :/
+            runner_os: ubuntu-24.04
     
     uses: ./.github/workflows/build_one.yaml
     with:
-      os: ${{ (matrix.cibw_arch == 'aarch64' || matrix.cibw_arch == 'armv7l') && 'ubuntu-26.04-arm' || 'ubuntu-26.04' }}
+      os: ${{ matrix.runner_os || 'ubuntu-26.04' }}
       cibw_os: ${{ matrix.cibw_os }}
       cibw_arch: ${{ matrix.cibw_arch }}
       cibw_py_ver: ${{ inputs.cibw_py_ver }}
