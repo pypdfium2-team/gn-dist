@@ -108,9 +108,9 @@ Then you can fix things up and eventually re-create the tag on another commit.
 ### History
 
 See below for some background why `gn-dist` was created:
-- https://groups.google.com/g/pdfium/c/1__HW-wzJ8c/m/5MCYXAuDBQAJ
-- https://chromium-review.googlesource.com/c/chromium/src/+/7593779/comments/fdd2633a_eb123349
-- https://gn.googlesource.com/gn/+/88604adbcec2101f25b2e3ebd7f39b38163a6a33/README.md#versioning-and-distribution
+- <https://groups.google.com/g/pdfium/c/1__HW-wzJ8c/m/5MCYXAuDBQAJ>
+- <https://chromium-review.googlesource.com/c/chromium/src/+/7593779/comments/fdd2633a_eb123349>
+- <https://gn.googlesource.com/gn/+/88604adbcec2101f25b2e3ebd7f39b38163a6a33/README.md#versioning-and-distribution>
 
 ### Related work
 
