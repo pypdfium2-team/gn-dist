@@ -21,10 +21,7 @@ jobs:
       - name: Ensure HEAD of main
         run: |
           EXPECTED_SHA=$(git ls-remote "$REPO_URL" "refs/heads/main" | cut -f1)
-          if [[ "$CURRENT_SHA" != "$EXPECTED_SHA" ]]; then
-            echo "Current revision is not the HEAD of main."
-            exit 1
-          fi
+          [[ "$CURRENT_SHA" != "$EXPECTED_SHA" ]] && exit 1
         env:
           CURRENT_SHA: ${{ github.sha }}
           REPO_URL: ${{ format('{0}/{1}', github.server_url, github.repository) }}
