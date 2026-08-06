@@ -19,16 +19,12 @@ jobs:
     steps:
       
       - name: Ensure HEAD of main
-        shell: python
         run: |
-          import os, subprocess
-          def run(cmd):
-              p = subprocess.run(cmd, stdout=subprocess.PIPE)
-              return p.stdout.decode().strip()
-          
-          expected_sha = run(["git", "ls-remote", os.environ["REPO_URL"], "refs/heads/main"]).split("\t")[0]
-          if os.environ["CURRENT_SHA"] != expected_sha:
-              raise ValueError("Current revision is not the HEAD of main.")
+          EXPECTED_SHA=$(git ls-remote "$REPO_URL" "refs/heads/main" | cut -f1)
+          if [[ "$CURRENT_SHA" != "$EXPECTED_SHA" ]]; then
+            echo "Current revision is not the HEAD of main."
+            exit 1
+          fi
         env:
           CURRENT_SHA: ${{ github.sha }}
           REPO_URL: ${{ format('{0}/{1}', github.server_url, github.repository) }}
