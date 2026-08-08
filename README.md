@@ -42,7 +42,7 @@ gn-dist (and GN itself) use `git` to infer version info.
 This is known to cause issues with shallow checkouts.
 We recommend that you configure your clone of gn-dist in a way that allows `git describe` to do its job.
 
-Where that is not possible (e.g. when installing from a tarball that does not contain the git repository) a `src/gn_dist/VERSION` file must be provided.<br>
+Where that is not possible (e.g. when installing from a tarball that does not contain the git repository), a `src/gn_dist/VERSION` file must be provided.<br>
 This is just a plain text file containing the version string that will be passed to gn-dist's PEP 517 build backend.
 The version should be provided as a [PEP 440 / PyPA specs](https://packaging.python.org/en/latest/specifications/version-specifiers/#version-specifiers) compatible normalization of what would otherwise be returned by `git describe`.<br>
 The `VERSION` file is included in sdists and will be auto-generated where possible.
