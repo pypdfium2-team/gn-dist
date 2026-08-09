@@ -5,7 +5,6 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools"]
 
-# TODO consider removing the project table altogether, as it is potentially impedimental to backward compatibility
 [project]
 name = "gn-dist"
 requires-python = ">=3.6"
