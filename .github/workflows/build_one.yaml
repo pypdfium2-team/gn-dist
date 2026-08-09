@@ -47,7 +47,7 @@ jobs:
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
       
       - name: Build wheels
-        uses: loong64/cibuildwheel@e1f483ac54bae73808efc6e5888b05eae9c478ba # v4.1.1
+        uses: loong64/cibuildwheel@17768452a199071a2d69bc22931b395f9794e8db # v4.2.0
         env:
           CIBW_BUILD: "${{ inputs.cibw_py_ver }}-${{ inputs.cibw_os }}_${{ inputs.cibw_arch }}"
           CIBW_ARCHS: "${{ inputs.cibw_arch }}"
