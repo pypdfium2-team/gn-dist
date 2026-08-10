@@ -14,7 +14,7 @@ from collections import namedtuple
 PROJECT_DIR = Path(__file__).parent.resolve()
 SBUILD_DIR = PROJECT_DIR/"sbuild"
 GN_DIR = SBUILD_DIR/"gn"
-GN_REV = "3357c4f51b1a9e676378c695dd9c7e9911c35ee6"
+GN_REV = "3fd3b0624d8cba16927853600130b2c33d4e7928"
 
 
 def log(*args, **kwargs):
