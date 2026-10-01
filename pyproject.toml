@@ -65,7 +65,7 @@ inherit.environment = "append"
 environment.PATH = "/usr/lib/ninja-build/bin:$PATH"
 
 [[tool.cibuildwheel.overrides]]
-select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
+select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x} *-manylinux_armv7l"
 environment-pass = ["RUNNER_ARCH"]
 inherit.before-all = "append"
 before-all = [
