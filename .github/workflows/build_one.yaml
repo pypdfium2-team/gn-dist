@@ -44,10 +44,10 @@ jobs:
       
       - name: Set up QEMU
         if: ${{ !(inputs.cibw_arch == 'x86_64' || inputs.cibw_arch == 'aarch64') }}
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
       
       - name: Build wheels
-        uses: loong64/cibuildwheel@17768452a199071a2d69bc22931b395f9794e8db # v4.2.0
+        uses: loong64/cibuildwheel@68b120a4eebfced99ef9c9f4c7c57bd7bdd04cbb # v4.2.1
         env:
           CIBW_BUILD: "${{ inputs.cibw_py_ver }}-${{ inputs.cibw_os }}_${{ inputs.cibw_arch }}"
           CIBW_ARCHS: "${{ inputs.cibw_arch }}"
