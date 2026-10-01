@@ -32,7 +32,9 @@ test-command = [
 ]
 
 [tool.cibuildwheel.linux]
-manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_35:latest"
+# Fails to build on manylinux_2_35 because system libstdc++ is unfit for C++23. Meh.
+# This is because manylinux_armv7l is (unfortunately) Ubuntu-based, whereas most other architectures use RHEL/AlmaLinux which does a much better job at supporting modern C++ standards despite an even older core system.
+manylinux-armv7l-image = "ghcr.io/mayeut/manylinux_2_39:latest"
 
 # install ninja
 
@@ -50,7 +52,6 @@ before-all = [
 # inherit.before-build = "append"
 # before-build = ["pip install -U ninja"]
 
-# manylinux_armv7l uses a Ubuntu-based image, for lack of an RHEL-based one
 [[tool.cibuildwheel.overrides]]
 select = "*-manylinux_armv7l"
 before-all = [
@@ -65,7 +66,7 @@ inherit.environment = "append"
 environment.PATH = "/usr/lib/ninja-build/bin:$PATH"
 
 [[tool.cibuildwheel.overrides]]
-select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x} *-manylinux_armv7l"
+select = "*-*linux_{ppc64le,riscv64,loongarch64,s390x}"
 environment-pass = ["RUNNER_ARCH"]
 inherit.before-all = "append"
 before-all = [
