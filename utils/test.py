@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import gn_dist
-import subprocess
+from subprocess import check_output
 
-p = subprocess.run([str(gn_dist.GN), "--version"], check=True, capture_output=True)
-print(p.stdout.decode().strip())
+out = check_output([str(gn_dist.GN), "--version"])
+print(out.decode().strip())
