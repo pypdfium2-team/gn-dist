@@ -9,7 +9,7 @@ build *args:
 
 sync-locks:
     # assuming pypdfium2 and gn-dist share the same parent directory
-    cp ../pypdfium2/lock/distcheck.txt lock/distcheck.txt
+    cp ../pypdfium2/lock/*.txt -t lock/
 update-actions $MIN_AGE='7':
 	pinact run -update -min-age "$MIN_AGE" || true
 update-all-pins: sync-locks update-actions
